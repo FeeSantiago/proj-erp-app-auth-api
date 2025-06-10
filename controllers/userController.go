@@ -9,18 +9,7 @@ import (
 	"proj-erp-auth/repository"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 )
-
-var validate = validator.New()
-
-func HashPassword()
-
-func VerifyPassword()
-
-func Signup()
-
-func Login()
 
 func GetUser(repo *repository.UserRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {

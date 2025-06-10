@@ -23,7 +23,7 @@ func ConnectGORM() (*gorm.DB, error) {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PORT"),
 	)
-
+	fmt.Println("DSN gerado:", dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("erro ao conectar com GORM: %w", err)

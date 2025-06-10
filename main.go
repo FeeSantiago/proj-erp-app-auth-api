@@ -1,33 +1,37 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"proj-erp-auth/controllers"
 	"proj-erp-auth/database"
+	"proj-erp-auth/middlewares"
 	"proj-erp-auth/repository"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	//Config logger
-	router := gin.New()
-	router.Use(gin.Logger())
+	err := godotenv.Load()
+	fmt.Println("User:", os.Getenv("DB_USER"))
+	fmt.Println("Pass:", os.Getenv("DB_PASSWORD"))
 
-	//Connecta com o DB Postgres
+	// Cria e configura o router corretamente
+	router := gin.Default()
+
+	// Conecta com o DB Postgres
 	db, err := database.ConnectGORM()
 	if err != nil {
 		log.Fatalf("Erro ao conectar no banco: %v", err)
 	}
 
-	userRepo := repository.NewUserRepository(db)
+	userRepository := repository.NewUserRepository(db)
 
-	r := gin.Default()
+	router.Use(middlewares.AuthMiddleware())
 
-	// Passa o repo para o handler
-	r.GET("/user/:userId", controllers.GetUser(userRepo))
+	router.GET("/user/:userId", controllers.GetUser(userRepository))
 
-	// Outros endpoints...
-
-	r.Run(":8080")
+	router.Run(":8080")
 }
